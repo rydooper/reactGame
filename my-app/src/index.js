@@ -2,35 +2,58 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
+//function to make the squares, to use later
+function Square(props) {
+    return (
+        <button className="square" onClick={props.onClick}>
+            {props.value}
+        </button> //on click, function (handleClick) in Board is called
+    );
+}
+
 //component is a class/type, takes parameters/"props"
 //returns hierarchy of views to display via render method
-class Square extends React.Component {
+
+class Board extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            value: null,
-        }; //stores "state" aka remembers that X was clicked
-    }      //this.state is considered private thing of class Square
+            squares: Array(9).fill(null),
+            xIsNext: true,
+        };
+    } //a square now either has X, O or null
     
-    render() {          //render returns a React element, a description of what to render
-        return (        //using JSX makes structures easier to write
-            <button
-                className="Square"
-                onClick={()=> this.setState({value: 'X'})}
-                >
-                    {this.state.value}
-            </button> //on click, current states value is displayed
-        ); //takes values passed by Board
-    }
-} //Square renders a single button
+    handleClick(i) {
+        const squares = this.state.squares.slice();
+        if (calculateWinner(squares) || squares[i]) {
+            return;
+        } //if a winner is found, stops game and declares 
+        squares[i] = this.state.xIsNext ? 'X' : 'O';
+        this.setState({
+            squares: squares,
+            xIsNext: !this.state.xIsNext,
+        }); //creates copy of array + slices square wanted for editing
+    } //sets value in square to O or X depending on xIsNext state (true=X, false=Y)
 
-class Board extends React.Component {
     renderSquare(i) {
-        return <Square value={i}/>;
-    }
+        return (
+            <Square 
+                value={this.state.squares[i]}
+                onClick={()=> this.handleClick(i)}
+            />
+        ); //parenthesis added so JS doesnt add ; n break it
+    } //calls handleClick 
 
+//render returns a React element, a description of what to render
+//using JSX makes structures easier to write        
     render() {
-        const status = 'Next Player: X';
+        const winner = calculateWinner(this.state.squares);
+        let status;
+        if (winner) {
+            status = 'Winner: ' + winner;
+        } else {
+            status = 'Next player: ' + (this.state.xIsNex ? 'X' : 'O');
+        }
 
         return (
             <div>
@@ -70,6 +93,27 @@ class Game extends React.Component {
         );
     }
 } //Game renders Board with placeholder values
+
+function calculateWinner(squares) {
+    const lines = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+    ]; //winning combinations
+    
+    for (let i=0; i < lines.length; i++) {
+        const [a, b, c] = lines[i];
+        if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+            return squares[a]; //returns winner
+        }
+    }
+    return null; //safety return
+}
 
 ReactDOM.render(
     <Game />, //this div tag is transformed at build time to React.createELement('div')
