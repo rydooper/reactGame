@@ -7,10 +7,11 @@ import './index.css';
 class Square extends React.Component {
     render() {          //render returns a React element, a description of what to render
         return (        //using JSX makes structures easier to write
-            <button className="square"> 
+            <button className="square" onClick={() =>
+                alert('click')}>
             {this.props.value}
-            </button> //takes value passed by Board
-        );
+            </button> //square fills with an X when clicked
+        ); //takes values passed by Board
     }
 } //Square renders a single button
 
