@@ -5,12 +5,21 @@ import './index.css';
 //component is a class/type, takes parameters/"props"
 //returns hierarchy of views to display via render method
 class Square extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            value: null,
+        }; //stores "state" aka remembers that X was clicked
+    }      //this.state is considered private thing of class Square
+    
     render() {          //render returns a React element, a description of what to render
         return (        //using JSX makes structures easier to write
-            <button className="square" onClick={() =>
-                alert('click')}>
-            {this.props.value}
-            </button> //square fills with an X when clicked
+            <button
+                className="Square"
+                onClick={()=> this.setState({value: 'X'})}
+                >
+                    {this.state.value}
+            </button> //on click, current states value is displayed
         ); //takes values passed by Board
     }
 } //Square renders a single button
