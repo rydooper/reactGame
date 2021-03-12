@@ -2,19 +2,21 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
+//component is a class/type, takes parameters/"props"
+//returns hierarchy of views to display via render method
 class Square extends React.Component {
-    render() {
-        return (
-            <button className="square">
-            {/* TODO */}
-            </button>
+    render() {          //render returns a React element, a description of what to render
+        return (        //using JSX makes structures easier to write
+            <button className="square"> 
+            {this.props.value}
+            </button> //takes value passed by Board
         );
     }
-}
+} //Square renders a single button
 
 class Board extends React.Component {
     renderSquare(i) {
-        return <Square />;
+        return <Square value={i}/>;
     }
 
     render() {
@@ -41,7 +43,7 @@ class Board extends React.Component {
             </div>
         );
     }
-}
+} //Board renders 9 Squares
 
 class Game extends React.Component {
     render() {
@@ -57,9 +59,10 @@ class Game extends React.Component {
             </div>
         );
     }
-}
+} //Game renders Board with placeholder values
 
 ReactDOM.render(
-    <Game />,
+    <Game />, //this div tag is transformed at build time to React.createELement('div')
+              //essentially acts as a shortcut instead of much longer code
     document.getElementById('root')
 );
